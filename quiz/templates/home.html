@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Quiz System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 to-purple-50 min-h-screen">
+    <div class="max-w-6xl mx-auto py-8 px-6">
+        <!-- Navbar -->
+        <nav class="flex justify-between items-center mb-12">
+            <h1 class="text-3xl font-bold text-indigo-700">Online Quiz</h1>
+            <div class="flex gap-4 items-center">
+                {% if user.is_authenticated %}
+                    <span class="text-gray-700">Welcome, <strong>{{ user.username }}</strong></span>
+                    <a href="{% url 'student_logout' %}" 
+                       class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-xl text-sm font-medium">
+                        Logout
+                    </a>
+                {% else %}
+                    <a href="{% url 'register' %}" 
+                       class="bg-white hover:bg-gray-100 border border-gray-300 px-6 py-2 rounded-xl text-sm font-medium">
+                        Register
+                    </a>
+                    <a href="{% url 'student_login' %}" 
+                       class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-xl text-sm font-medium">
+                        Student Login
+                    </a>
+                    <a href="/admin/" 
+                       class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-2 rounded-xl text-sm font-medium">
+                        Teacher Login
+                    </a>
+                {% endif %}
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-indigo-700 mb-4">Online Quiz System</h1>
+            <p class="text-2xl text-gray-600">Simple Examination System for Database Design Class</p>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-2xl p-10">
+            <h2 class="text-3xl font-semibold text-center mb-10 text-gray-800">Available Quizzes</h2>
+            
+            {% if quizzes %}
+            <div class="grid md:grid-cols-2 gap-6">
+                {% for quiz in quizzes %}
+                <div class="border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-all hover:-translate-y-1">
+                    <h3 class="text-2xl font-semibold mb-3">{{ quiz.title }}</h3>
+                    <p class="text-gray-600 mb-6">{{ quiz.subject.name }} • {{ quiz.duration_minutes }} minutes</p>
+                    
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'take_quiz' quiz.id %}" 
+                       class="block text-center bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-semibold">
+                        Start Quiz
+                    </a>
+                    {% else %}
+                    <a href="{% url 'student_login' %}" 
+                       class="block text-center bg-gray-600 hover:bg-gray-700 text-white py-4 rounded-2xl font-semibold">
+                        Login to Start Quiz
+                    </a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-center text-gray-500 py-16 text-xl">No active quizzes available at the moment.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

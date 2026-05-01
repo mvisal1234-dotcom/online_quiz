@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ quiz.title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen py-8">
+    <div class="max-w-3xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden">
+        <div class="bg-indigo-600 text-white p-8">
+            <h1 class="text-3xl font-bold">{{ quiz.title }}</h1>
+            <p class="mt-2">Duration: {{ quiz.duration_minutes }} minutes | Total Marks: {{ quiz.total_marks }}</p>
+        </div>
+
+        <form method="POST" class="p-8">
+            {% csrf_token %}
+            {% for q in questions %}
+            <div class="mb-10 border-b pb-8">
+                <p class="font-semibold text-lg mb-4">
+                    {{ forloop.counter }}. {{ q.question.question_text }}
+                    <span class="text-sm text-gray-500">({{ q.question.marks }} marks)</span>
+                </p>
+                
+                <div class="space-y-3 ml-4">
+                    {% for option in q.question.options.all %}
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="radio" 
+                               name="question_{{ q.question.id }}" 
+                               value="{{ option.id }}"
+                               class="w-5 h-5 accent-indigo-600">
+                        <span>{{ option.option_text }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="text-center mt-10">
+                <button type="submit" 
+                        class="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-12 rounded-xl text-lg">
+                    Submit Quiz
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
